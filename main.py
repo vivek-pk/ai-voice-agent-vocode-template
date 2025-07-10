@@ -10,7 +10,7 @@ from vocode.streaming.models.telephony import TwilioConfig
 # from pyngrok import ngrok
 # import sys
 from memory_config import config_manager
-from vocode.streaming.models.agent import ChatGPTAgentConfig
+from vocode.streaming.models.agent import ChatVertexAIAgentConfig
 from vocode.streaming.models.message import BaseMessage
 from vocode.streaming.telephony.server.base import (
     TwilioInboundCallConfig,
@@ -74,14 +74,12 @@ def get_assistant_instructions():
     return file.read()
 
 # Now, we'll configure our agent and its objective.
-# We'll use ChatGPT here, but you can import other models like
-# GPT4AllAgent and ChatAnthropicAgent.
-# Don't forget to set OPENAI_API_KEY!
-AGENT_CONFIG = ChatGPTAgentConfig(
-  initial_message=BaseMessage(text="Hello, who am I talking to?"),
-  prompt_preamble=get_assistant_instructions(),
-  generate_responses=True,
-  model_name="gpt-3.5-turbo",
+# We'll use Gemini here via Vertex AI.
+AGENT_CONFIG = ChatVertexAIAgentConfig(
+    initial_message=BaseMessage(text="Hello, How can I help you?"),
+    prompt_preamble=get_assistant_instructions(),
+    model_name="gemini-2.0-flash",
+    generate_responses=True,
 )
 
 # Now we'll give our agent a voice and ears.
