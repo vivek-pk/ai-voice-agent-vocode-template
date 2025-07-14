@@ -43,7 +43,14 @@ class GeminiAgent(RespondAgent[GeminiAgentConfig]):
         conversation_id: str,
         is_interrupt: bool = False,
     ) -> Tuple[Optional[str], bool]:
-        # Replace this with actual Gemini API call
+        return await self.generate_response(human_input, conversation_id)
+
+    async def generate_response(
+        self,
+        human_input,
+        conversation_id: str,
+        is_interrupt: bool = False,
+    ) -> Tuple[Optional[str], bool]:
         import httpx
 
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model_name}:generateContent?key={self.api_key}"
