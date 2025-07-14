@@ -43,14 +43,16 @@ class GeminiAgent(RespondAgent[GeminiAgentConfig]):
         conversation_id: str,
         is_interrupt: bool = False,
     ) -> Tuple[Optional[str], bool]:
-        return await self.generate_response(human_input, conversation_id)
+        # This is fine, it just calls generate_response
+        async for response, stop in self.generate_response(human_input, conversation_id):
+            return response, stop
 
     async def generate_response(
         self,
         human_input,
         conversation_id: str,
         is_interrupt: bool = False,
-    ) -> Tuple[Optional[str], bool]:
+    ):
         import httpx
 
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model_name}:generateContent?key={self.api_key}"
@@ -63,9 +65,9 @@ class GeminiAgent(RespondAgent[GeminiAgentConfig]):
             if response.status_code == 200:
                 data = response.json()
                 text = data["candidates"][0]["content"]["parts"][0]["text"]
-                return text, False
+                yield text, False
             else:
-                return "Sorry, I couldn't process your request.", False
+                yield "Sorry, I couldn't process your request.", False
 
 
 class CustomAIAgentConfig(AgentConfig, type="custom_ai"):
