@@ -19,7 +19,7 @@ from vocode.streaming.telephony.server.base import (
 from vocode.streaming.models.synthesizer import StreamElementsSynthesizerConfig # ,ElevenLabsSynthesizerConfig
 
 # Imports our custom actions
-from speller_agent import SpellerAgentFactory
+from speller_agent import SpellerAgentFactory, GeminiAgentConfig
 
 # Imports additional events like transcripts
 from events_manager import EventsManager
@@ -77,11 +77,13 @@ def get_assistant_instructions():
 # We'll use ChatGPT here, but you can import other models like
 # GPT4AllAgent and ChatAnthropicAgent.
 # Don't forget to set OPENAI_API_KEY!
-AGENT_CONFIG = ChatGPTAgentConfig(
-  initial_message=BaseMessage(text="Hello, how can I help you?"),
-  prompt_preamble=get_assistant_instructions(),
-  generate_responses=True,
-  model_name="gpt-3.5-turbo",
+AGENT_CONFIG = GeminiAgentConfig(
+    api_key=os.environ.get("GEMINI_API_KEY"),
+    initial_message=BaseMessage(text="Hello, how can I help you?"),
+    prompt_preamble=get_assistant_instructions(),
+    generate_responses=True,
+    model_name="gemini-pro",
+    temperature=0.7,
 )
 
 # Now we'll give our agent a voice and ears.
