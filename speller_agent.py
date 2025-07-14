@@ -64,7 +64,17 @@ class GeminiAgent(RespondAgent[GeminiAgentConfig]):
             response = await client.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                text = data["candidates"][0]["content"]["parts"][0]["text"]
+                try:
+                    text = (
+                        data.get("candidates", [{}])[0]
+                        .get("content", {})
+                        .get("parts", [{}])[0]
+                        .get("text", "")
+                    )
+                    if not text:
+                        text = "Sorry, I couldn't process your request."
+                except Exception:
+                    text = "Sorry, I couldn't process your request."
                 yield text, False
             else:
                 yield "Sorry, I couldn't process your request.", False
